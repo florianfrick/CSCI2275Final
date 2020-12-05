@@ -1,35 +1,23 @@
-#ifndef HEAP_H
-#define HEAP_H
+#ifndef PQHEAP_H
+#define PQHEAP_H
 
-#include<vector>
+#include "product.cpp"
+#include <string>
 #include<iostream>
-
-struct heapItem
-{
-    public:
-        std::string name;
-        int priority;
-
-        //constructor
-        heapItem(std::string name, int priority)
-            :name(name), priority(priority)
-        {}
-};
-
 
 class PriorityQueueHeap
 {
     public:
         PriorityQueueHeap(int capacity);
-        void push(heapItem *obj);
+        void push(std::string purchaser, product prod);
         heapItem* pop();
-        void printHeap();
+        void print();
     private:
         heapItem** heap; //array of pointers to heapItems
         int capacity;
         int currentSize;
-        void minHeapify(int i);
+        void maxHeapify(int i);
         void swap(int one, int two);
 };
 
-#endif // HEAP_H
+#endif // PQHEAP_H

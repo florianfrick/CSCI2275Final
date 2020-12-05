@@ -1,4 +1,5 @@
 #include "Dictionary.h"
+#include "PriorityQueueHeap.h"
 
 using namespace std;
 
@@ -25,6 +26,29 @@ int main()
     {
         cout << p.productName << " " << p.num << endl;
     }
+
+
+    cout << endl << endl;
+    PriorityQueueHeap *h = new PriorityQueueHeap(9);
+
+    for(int i = 4; i >= 0; i--)
+    {
+        h->push(names[i], product(productNames[i], i*2));
+    }
+    for(int i = 4; i < 9; i++)
+    {
+        h->push(names[i], product(productNames[i], i*2));
+    }
+    
+    h->print();
+    cout << endl;
+    for(int i = 8; i > 0; i--)
+    {
+        cout << "Removed: ";
+        h->pop()->print();
+    }
+    cout << endl;
+    h->print();
 
     return 0;
 };

@@ -1,5 +1,8 @@
 #include "PriorityQueueHeap.h"
 #include <iostream>
+#include <string>
+
+using namespace std;
 
 PriorityQueueHeap::PriorityQueueHeap(int capa)
 {
@@ -9,8 +12,10 @@ PriorityQueueHeap::PriorityQueueHeap(int capa)
 }
 
 //add to heap, then move to correct position
-void PriorityQueueHeap::push(heapItem *obj)
+void PriorityQueueHeap::push(string purchaser, product prod)
 {
+    heapItem *newPurchase = new heapItem(purchaser, prod, -1);
+    newPurchase->determinePriority();
     if (currentSize == capacity)
     {
         std::cout << "full";
@@ -19,8 +24,8 @@ void PriorityQueueHeap::push(heapItem *obj)
     {
         currentSize++;
         int i = currentSize;
-        heap[i] = obj;
-        while(i > 1 && !heapItem::oneIsSmallerPriority(heap[i/2], heap[i]) )
+        heap[i] = newPurchase;
+        while(i > 1 && heap[i/2]->priority < heap[i]->priority)
         {
             swap(i,i/2); //swaps indexes
             i /= 2;
@@ -44,26 +49,38 @@ heapItem* PriorityQueueHeap::pop()
     heapItem* popVal = heap[1];
     heap[1] = heap[currentSize];
     currentSize--;
-    minHeapify(1);
+    maxHeapify(1);
     return popVal;
 }
 
-void PriorityQueueHeap::minHeapify(int i)
+void PriorityQueueHeap::print()
+{
+    for(int i = 0; i < capacity; i++)
+    {
+        if(heap[i] != NULL)
+        {
+            cout << i << ": ";
+            heap[i]->print();
+        }
+    }
+}
+
+void PriorityQueueHeap::maxHeapify(int i)
 {
     int left = 2*i;
     int right = 2*i+1;
-    int smallest = i;
+    int largest = i;
     //sorts by priority and treatment
-    if(left <= currentSize && heapItem::oneIsSmallerPriority(heap[left], heap[smallest]))
-        smallest = left;
+    if(left <= currentSize && heap[left]->priority > heap[largest]->priority)
+        largest = left;
 
-    if(right <= currentSize && heapItem::oneIsSmallerPriority(heap[right], heap[smallest]))
-        smallest = right;
+    if(right <= currentSize && heap[right]->priority > heap[largest]->priority)
+        largest = right;
 
-    if(smallest != i)
+    if(largest != i)
     {
-        swap(i, smallest); //swaps indexes
-        minHeapify(smallest);
+        swap(i, largest); //swaps indexes
+        maxHeapify(largest);
     }
 }
 
