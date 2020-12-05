@@ -1,37 +1,38 @@
 #ifndef HEAP_H
 #define HEAP_H
 
+#include "product.cpp"
 #include<vector>
+#include <string>
+#include <tuple>
 #include<iostream>
 
-struct dictItem
-{
-    public:
-        std::string name;
-        int priority;
+using namespace std;
 
-        //constructor
-        dictItem(std::string name, int priority)
-            :name(name), priority(priority)
-        {}
-};
-
-
+//generic dictionary class
+//one array for products[string] and their costs[int]
+//one array for products[string] and their stock[int]
+//one dictionary for customers[string] and their purchases[array of vectors of products]
+//one array for purchased products[string] and the amount purchased[int]
 class Dictionary
 {
     public:
         Dictionary(int capacity);
+        vector<product> search(string name); // returns vector of products purchased by given customer
+        bool insert(string name, product product);
+        int hash(string name);
+        void print();
+
+        bool remove(string name);
         bool empty();
         int size();
         int max_size();
-        dictItem get(key k);
-        bool insert(dictItem item);
-        bool remove(key k);
         bool clear();
-        int count(key k); //?
-        bool contains(key k);
+        int count(string name); //?
+        bool contains(string name);
     private:
-
+        int hashSize;
+        vector<tuple<string, vector<product>>> *purchases; // array of chaining vectors where each tuple represents a customer and their purchased products
 };
 
 #endif // HEAP_H
