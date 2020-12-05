@@ -11,12 +11,12 @@ Dictionary::Dictionary(int capacity)
 vector<product> Dictionary::search(string name)
 {
     int hashIndex = hash(name);
-    vector<tuple<string, vector<product>>> temp = purchases[hashIndex]; //chained vector of all people who's names collide
-    for(int i = 0; i < temp.size(); i++)
+    vector<tuple<string, vector<product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
+    for(int i = 0; i < temp->size(); i++)
     {
-        if(get<0>(temp[i]) == name)
+        if(get<0>((*temp)[i]) == name)
         {
-            return get<1>(temp[i]);
+            return get<1>((*temp)[i]);
         }
     }
     return {};
@@ -24,32 +24,25 @@ vector<product> Dictionary::search(string name)
 
 bool Dictionary::insert(string name, product p)
 {
-
     int hashIndex = hash(name);
-    vector<tuple<string, vector<product>>> temp = purchases[hashIndex]; //chained vector of all people who's names collide
-
-    cout << name << endl;
-    cout << p.productName << " " << p.num << endl;
-    cout << "i: " << hashIndex << endl;
-    cout << "temp: " << temp.empty() << endl;
-
+    vector<tuple<string, vector<product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
 
     // First person to be hashed at this index
-    if(temp.empty())
+    if(temp->empty())
     {
         vector<product> newProducts;
         newProducts.push_back(p);
-        temp[0] = make_tuple(name, newProducts); // seg faults here
+        temp->push_back(make_tuple(name, newProducts));
         return true;
     }
 
     // Determine if new or past customer
-    for(int i = 0; i < temp.size(); i++)
+    for(int i = 0; i < temp->size(); i++)
     {
-        if(get<0>(temp[i]) == name)
+        if(get<0>((*temp)[i]) == name)
         {
             // past customer
-            get<1>(temp[i]).push_back(p);
+            get<1>((*temp)[i]).push_back(p);
             return true;
         }
     }
@@ -58,7 +51,7 @@ bool Dictionary::insert(string name, product p)
     vector<product> newCustomerProducts;
     newCustomerProducts.push_back(p);
 
-    temp.push_back(make_tuple(name, newCustomerProducts));
+    temp->push_back(make_tuple(name, newCustomerProducts));
     return true;
 }
 
