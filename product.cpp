@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -29,12 +30,24 @@ class heapItem
         {}
     
     // priority determined by cost of purchase
-    int determinePriority()
+    int determinePriority(vector<string> *prodNames, vector<int> *prodCosts, int arrSize)
     {
-        priority = prod.num; // temporary
+        //finds index that matches this product
+        int index = -1;
+        for(int i = 0; i < arrSize; i++)
+        {
+            if((*prodNames)[i] == prod.productName)
+            {
+                index = i;
+                break;
+            }
+        }
 
-        //look up productName in array of prices
-
+        if(index >= 0)
+        {
+            //multiplies purchased amount by cost of product
+            priority = prod.num * (*prodCosts)[index];
+        }
         return priority;
     }
 

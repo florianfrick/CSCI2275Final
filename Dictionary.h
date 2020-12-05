@@ -10,8 +10,9 @@
 using namespace std;
 
 //generic dictionary class
-//one array for products[string] and their costs[int]
-//one array for products[string] and their stock[int]
+//one array for products[string]
+//one array for products's costs[int]
+//one array for products's and their stock[int]
 //one dictionary for customers[string] and their purchases[array of vectors of products]
 //one array for purchased products[string] and the amount purchased[int]
 class Dictionary

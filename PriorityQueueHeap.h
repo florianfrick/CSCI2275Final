@@ -3,13 +3,14 @@
 
 #include "product.cpp"
 #include <string>
+#include <vector>
 #include<iostream>
 
 class PriorityQueueHeap
 {
     public:
         PriorityQueueHeap(int capacity);
-        void push(std::string purchaser, product prod);
+        void push(std::string purchaser, product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize);
         heapItem* pop();
         void print();
     private:

@@ -1,6 +1,4 @@
 #include "PriorityQueueHeap.h"
-#include <iostream>
-#include <string>
 
 using namespace std;
 
@@ -11,11 +9,17 @@ PriorityQueueHeap::PriorityQueueHeap(int capa)
     heap = new heapItem*[capacity];
 }
 
-//add to heap, then move to correct position
-void PriorityQueueHeap::push(string purchaser, product prod)
+//Uses name and cost arrays to determine priority of the new item
+void PriorityQueueHeap::push(string purchaser, product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize)
 {
     heapItem *newPurchase = new heapItem(purchaser, prod, -1);
-    newPurchase->determinePriority();
+    newPurchase->determinePriority(prodNames, prodCosts, arrSize);
+    
+    //debug prints
+    cout << "Added to Heap:  ";
+    newPurchase->print();
+    //
+
     if (currentSize == capacity)
     {
         std::cout << "full";
