@@ -42,7 +42,16 @@ bool Dictionary::insert(string name, product p)
     {
         if(isPastCustomer(name, temp,i))
         {
-            get<1>((*temp)[i]).push_back(p);
+            int prodIndex = productIndex(p, get<1>((*temp)[i]));
+            if(prodIndex >= 0)
+            {
+                // Customer has purchased this product before
+                get<1>((*temp)[i]).at(prodIndex).num += p.num;
+            }
+            else
+            {
+                get<1>((*temp)[i]).push_back(p);
+            }
             return true;
         }
     }
@@ -59,6 +68,19 @@ bool Dictionary::insert(string name, product p)
 bool Dictionary::isPastCustomer(string name, vector<tuple<string, vector<product>>> *temp, int i)
 {
     return get<0>((*temp)[i]) == name;
+}
+
+// Helper method to determine index of a product name in a vector of products.
+int Dictionary::productIndex(product p, vector<product> products)
+{
+    for(int i = 0; i < products.size(); i++)
+    {
+        if(p.productName == products.at(i).productName)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 // Helper method to add a person and their products to the dictionary if no additional chaining is necessary.
@@ -152,4 +174,17 @@ int Dictionary::count()
         count += purchases[i].size();
     }
     return count;
+}
+
+// Determines if name of product p is in the vector of product names.
+bool Dictionary::isProduct(product p, vector<string> *prodNames)
+{
+    for(int i = 0; i < prodNames->size(); i++)
+    {
+        if(p.productName == prodNames->at(i))
+        {
+            return true;
+        }
+    }
+    return false;
 }

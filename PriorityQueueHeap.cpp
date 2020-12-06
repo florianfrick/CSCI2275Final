@@ -74,6 +74,15 @@ bool PriorityQueueHeap::empty()
     return currentSize <= 0;
 }
 
+heapItem* PriorityQueueHeap::get(int index)
+{
+    if(currentSize >= index)
+    {
+        return heap[index];
+    }
+    return NULL;
+}
+
 //prints the status of the entire underlying array. Bugfixing purposes only.
 void PriorityQueueHeap::print()
 {

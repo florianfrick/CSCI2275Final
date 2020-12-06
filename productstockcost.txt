@@ -8,3 +8,4 @@ shelf,5000,500
 cabinet,5000,150
 drawer,50000,180
 dresser,5000,700
+door,50000,90

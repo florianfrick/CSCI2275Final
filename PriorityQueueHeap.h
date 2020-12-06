@@ -14,6 +14,7 @@ class PriorityQueueHeap
         heapItem* pop();
         void print();
         bool empty();
+        heapItem* get(int index);
     private:
         heapItem** heap; //array of pointers to heapItems
         int capacity;
