@@ -4,7 +4,10 @@ using namespace std;
 
 PriorityQueueHeap::PriorityQueueHeap(int capa)
 {
-    capacity = capa;
+    if(capa >= 0)
+    {
+        capacity = capa;
+    }
     currentSize = 0;
     heap = new heapItem*[capacity];
 }
@@ -15,14 +18,13 @@ void PriorityQueueHeap::push(string purchaser, product prod, vector<string> *pro
     heapItem *newPurchase = new heapItem(purchaser, prod, -1);
     newPurchase->determinePriority(prodNames, prodCosts, arrSize);
     
-    //debug prints
-    cout << "Added to Heap:  ";
-    newPurchase->print();
-    //
+    // Output for Debug Purposes
+    // cout << "Added:  ";
+    // newPurchase->print();
 
     if (currentSize == capacity)
     {
-        std::cout << "full";
+        std::cout << "Can not add item: heap full.";
     }
     else
     {
@@ -39,14 +41,19 @@ void PriorityQueueHeap::push(string purchaser, product prod, vector<string> *pro
 
 heapItem* PriorityQueueHeap::pop()
 {
-    if(currentSize==0)
+    if(currentSize <= 0)
     {
-        std::cout << "empty";
+        std::cout << "Can not remove item: heap empty.";
         return NULL;
     }
     if (currentSize == 1)
     {
         currentSize--;
+
+        // Output for Debug Purposes
+        // cout<< "Removed:  ";
+        // heap[1]->print();
+
         return heap[1];
     }
 
@@ -54,12 +61,23 @@ heapItem* PriorityQueueHeap::pop()
     heap[1] = heap[currentSize];
     currentSize--;
     maxHeapify(1);
+
+    // Output for Debug Purposes
+    // cout<< "Removed:  ";
+    // popVal->print();
+
     return popVal;
 }
 
+bool PriorityQueueHeap::empty()
+{
+    return currentSize <= 0;
+}
+
+//prints the status of the entire underlying array. Bugfixing purposes only.
 void PriorityQueueHeap::print()
 {
-    for(int i = 0; i < capacity; i++)
+    for(int i = 1; i < capacity; i++)
     {
         if(heap[i] != NULL)
         {

@@ -5,14 +5,14 @@
 
 using namespace std;
 
-// Creates arrays of product names, costs, and stock. Returns size of arrays.
-int costStock(string fileName, vector<string> *prodNames, vector<int> *prodStocks, vector<int> *prodCosts)
+// Creates arrays of product names, costs, and stock from external file. Returns size of arrays.
+int createCostStock(string fileName, vector<string> *prodNames, vector<int> *prodStocks, vector<int> *prodCosts)
 {
     ifstream productsFile;
     productsFile.open(fileName);
     if(!productsFile)
     {
-        cout << "Error: Could not open file." << endl;
+        cout << "Error: Could not open products file." << endl;
         return -1;
     }
 
@@ -20,10 +20,9 @@ int costStock(string fileName, vector<string> *prodNames, vector<int> *prodStock
     int i = 0;
     while(getline(productsFile, line))
     {
+        //collects information from external file
         stringstream linestream(line);
         string prodName, prodStock, prodCost;
-        
-        //collects information from external file
         getline(linestream, prodName, ',');
         getline(linestream, prodStock, ',');
         getline(linestream, prodCost, ',');
@@ -32,11 +31,77 @@ int costStock(string fileName, vector<string> *prodNames, vector<int> *prodStock
         prodNames->push_back(prodName);
         prodStocks->push_back(stoi(prodStock));
         prodCosts->push_back(stoi(prodCost));
+
         i++;
     }
 
-    productsFile.close();// close the file
+    productsFile.close(); // closes the file
     return i;
+}
+
+// Returns number of lines in the file
+int getNumLines(string fileName)
+{
+    ifstream file;
+    file.open(fileName);
+    if(!file)
+    {
+        cout << "Error: Could not open file." << endl;
+        return -1;
+    }
+    int count = 0;
+    string line;
+    while(getline(file, line))
+    {
+        count++;
+    }
+    return count;
+}
+
+// Creates and returns Priority Queue Heap of orders from external file.
+PriorityQueueHeap createOrders(string fileName, vector<string> *prodNames, vector<int> *prodCosts, int productsArrSize)
+{
+    int numOrders = getNumLines(fileName);
+    ifstream ordersFile;
+    ordersFile.open(fileName);
+    
+    PriorityQueueHeap ordersHeap = PriorityQueueHeap(numOrders); // Creates heap of capacity numOrders
+
+    string line;
+    while(getline(ordersFile, line))
+    {
+        // Collects information from external file
+        stringstream linestream(line);
+        string purchaser, prodName, prodAmount;
+        getline(linestream, purchaser, ',');
+        getline(linestream, prodName, ',');
+        getline(linestream, prodAmount, ',');
+
+        // Adds order to heap.
+        ordersHeap.push(purchaser, product(prodName, stoi(prodAmount)), prodNames, prodCosts, productsArrSize);
+    }
+
+    ordersFile.close(); // closes the file
+    return ordersHeap;
+}
+
+// Creates and returns dictionary by popping values from ordersHeap and using arrays to determine if product is in stock and the cost of the order. If an order is not in stock, prints message to console.
+Dictionary fulfillOrders(PriorityQueueHeap *ordersHeap, vector<string> *prodNames, vector<int> *prodStocks, vector<int> *prodCosts)
+{
+    Dictionary tabs = Dictionary(1000);
+
+    while(!ordersHeap->empty())
+    {
+        // Removes order from heap.
+        heapItem *poppedOrder = ordersHeap->pop();
+        if(poppedOrder != NULL)
+        {
+            // Adds order to dictionary under purchaser's "tab".
+            tabs.insert(poppedOrder->purchaser, poppedOrder->prod);
+        }
+    }
+
+    return tabs;
 }
 
 int main(int argc, char *argv[])
@@ -45,61 +110,23 @@ int main(int argc, char *argv[])
     vector<string> prodNames;
     vector<int> prodStocks;
     vector<int> prodCosts;
-    int arrSize = costStock(argv[1], &prodNames, &prodStocks, &prodCosts);
-    if(arrSize < 0)
+    int productsArrSize = createCostStock(argv[1], &prodNames, &prodStocks, &prodCosts);
+    if(productsArrSize < 0)
     {
         return 0;
     }
 
+    // CREATE PRIORITY QUEUE OF ORDERS
+    PriorityQueueHeap ordersHeap = createOrders(argv[2], &prodNames, &prodCosts, productsArrSize);
 
+    // FULFULL ORDERS
+    Dictionary tabs = fulfillOrders(&ordersHeap, &prodNames, &prodStocks, &prodCosts);
 
-    //DICTIONARY TEST
-    string buyers[] = {"Dave", "Jim", "Bob", "Elizabeth", "Richard", "Gerald", "Joe", "Margaret", "Blaine"};
+    // OUTPUT
+    tabs.print();
 
-    Dictionary *dict = new Dictionary(5);
-    // cout << "Dictionary:" << endl;
-    // dict->print();
-
-    // for(int i = 0; i < 9; i++)
-    // {
-    //     dict->insert(buyers[i], product(prodNames[i], i*2));
-    // }
-
-    // dict->insert(buyers[0], product(prodNames[1], 50));
-    // dict->print();
-
-    // cout << endl;
-    // vector<product> ps = dict->search("Dave");
-    // cout << "Searched for Dave:" << endl; 
-    // for(product p: ps)
-    // {
-    //     cout << p.productName << " " << p.num << endl;
-    // }
-
-    //HEAP TEST
-    cout << endl << "Heap:" << endl;
-    PriorityQueueHeap *h = new PriorityQueueHeap(9);
-
-    for(int i = 0; i < 9; i++)
-    {
-        h->push(buyers[i], product(prodNames[i], prodStocks[i]), &prodNames, &prodCosts, arrSize);
-    }
-    // for(int i = 4; i < 9; i++)
-    // {
-    //     h->push(names[i], product(prodNames[i], i*2), prodNames, prodCosts, arrSize);
-    // }
-    
-    cout << endl << "Heap Created" << endl;
-    h->print(); //causes program to exit
-    cout << endl;
-    for(int i = 0; i < 9; i++)
-    {
-        cout << "Removed: ";
-        h->pop()->print();
-    }
-    cout << endl;
-    h->print();
-
+    cout << endl << "Total Cost: " << tabs.total(&prodNames, &prodCosts) << endl;
+    cout << "Number of Customers: " << tabs.count() << endl;
 
     return 0;
 };

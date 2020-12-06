@@ -9,29 +9,22 @@
 
 using namespace std;
 
-//generic dictionary class
-//one array for products[string]
-//one array for products's costs[int]
-//one array for products's and their stock[int]
-//one dictionary for customers[string] and their purchases[array of vectors of products]
-//one array for purchased products[string] and the amount purchased[int]
 class Dictionary
 {
     public:
         Dictionary(int capacity);
         vector<product> search(string name); // returns vector of products purchased by given customer
         bool insert(string name, product product);
-        int hash(string name);
         void print();
-
-        bool remove(string name);
-        bool empty();
-        int size();
-        int max_size();
-        bool clear();
-        int count(string name); //?
-        bool contains(string name);
+        int customerTotal(string name, vector<string> *prodNames, vector<int> *prodCosts);
+        int total(vector<string> *prodNames, vector<int> *prodCosts);
+        void addFirstAtHashedIndex(string name, product p, vector<tuple<string, vector<product>>> *temp);
+        int count(); 
     private:
+        bool isPastCustomer(string name, vector<tuple<string, vector<product>>> *temp, int i);
+        int getCostIndex(product product, vector<string> *prodNames, vector<int> *prodCosts);
+        int hash(string name);
+
         int hashSize;
         vector<tuple<string, vector<product>>> *purchases; // array of chaining vectors where each tuple represents a customer and their purchased products
 };

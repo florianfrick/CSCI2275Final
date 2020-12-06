@@ -1,9 +1,0 @@
-nails,2500,1
-books,100,10
-tables,150,150
-chairs,150,50
-mugs,50,10
-speaker,10,50
-timber,100,20
-steel,30,55
-fridge,10,300

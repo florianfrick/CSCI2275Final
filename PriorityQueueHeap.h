@@ -13,6 +13,7 @@ class PriorityQueueHeap
         void push(std::string purchaser, product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize);
         heapItem* pop();
         void print();
+        bool empty();
     private:
         heapItem** heap; //array of pointers to heapItems
         int capacity;
