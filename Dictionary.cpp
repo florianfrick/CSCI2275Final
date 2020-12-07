@@ -5,15 +5,15 @@ using namespace std;
 // Constructor that sets the dictionary's capacity.
 Dictionary::Dictionary(int capacity)
 {
-    purchases = new vector<tuple<string, vector<product>>>[capacity];
+    purchases = new vector<tuple<string, vector<Product>>>[capacity];
     hashSize = capacity;
 }
 
 // Returns a vector of all the products a given customer has in the dictionary.
-vector<product> Dictionary::search(string name)
+vector<Product> Dictionary::search(string name)
 {
     int hashIndex = hash(name);
-    vector<tuple<string, vector<product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
+    vector<tuple<string, vector<Product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
     for(int i = 0; i < temp->size(); i++)
     {
         if(get<0>((*temp)[i]) == name)
@@ -25,10 +25,10 @@ vector<product> Dictionary::search(string name)
 }
 
 // Adds a product to the dictionary where the customer's name is the key, and the product is the value.
-bool Dictionary::insert(string name, product p)
+bool Dictionary::insert(string name, Product p)
 {
     int hashIndex = hash(name);
-    vector<tuple<string, vector<product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
+    vector<tuple<string, vector<Product>>> *temp = &purchases[hashIndex]; //chained vector of all people who's names collide
 
     // First person to be hashed at this index
     if(temp->empty())
@@ -55,9 +55,8 @@ bool Dictionary::insert(string name, product p)
             return true;
         }
     }
-
     // new customer
-    vector<product> newCustomerProducts;
+    vector<Product> newCustomerProducts;
     newCustomerProducts.push_back(p);
 
     temp->push_back(make_tuple(name, newCustomerProducts));
@@ -65,13 +64,13 @@ bool Dictionary::insert(string name, product p)
 }
 
 // Helper method to determine if a customer is already in the dictionary.
-bool Dictionary::isPastCustomer(string name, vector<tuple<string, vector<product>>> *temp, int i)
+bool Dictionary::isPastCustomer(string name, vector<tuple<string, vector<Product>>> *temp, int i)
 {
     return get<0>((*temp)[i]) == name;
 }
 
 // Helper method to determine index of a product name in a vector of products.
-int Dictionary::productIndex(product p, vector<product> products)
+int Dictionary::productIndex(Product p, vector<Product> products)
 {
     for(int i = 0; i < products.size(); i++)
     {
@@ -84,9 +83,9 @@ int Dictionary::productIndex(product p, vector<product> products)
 }
 
 // Helper method to add a person and their products to the dictionary if no additional chaining is necessary.
-void Dictionary::addFirstAtHashedIndex(string name, product p, vector<tuple<string, vector<product>>> *temp)
+void Dictionary::addFirstAtHashedIndex(string name, Product p, vector<tuple<string, vector<Product>>> *temp)
 {
-    vector<product> newProducts;
+    vector<Product> newProducts;
     newProducts.push_back(p);
     temp->push_back(make_tuple(name, newProducts));
 }
@@ -108,10 +107,10 @@ void Dictionary::print()
 {
     for(int i = 0; i < hashSize; i++)
     {
-        for(tuple<string, vector<product>> hashValue: purchases[i])
+        for(tuple<string, vector<Product>> hashValue: purchases[i])
         {
             cout << get<0>(hashValue) << endl;
-            for(product p: get<1>(hashValue))
+            for(Product p: get<1>(hashValue))
             {
                 cout << "\t" << p.productName << " " << p.num << endl;
             }
@@ -122,7 +121,7 @@ void Dictionary::print()
 // Returns total cost of all products of one customer according to a cost array.
 int Dictionary::customerTotal(string name, vector<string> *prodNames, vector<int> *prodCosts)
 {
-    vector<product> products = search(name);
+    vector<Product> products = search(name);
     int sum = 0;
     for(int i = 0; i < products.size(); i++)
     {
@@ -137,12 +136,12 @@ int Dictionary::customerTotal(string name, vector<string> *prodNames, vector<int
 }
 
 // Helper method to find index in the name and cost arrays of a given product.
-int Dictionary::getCostIndex(product product, vector<string> *prodNames, vector<int> *prodCosts)
+int Dictionary::getCostIndex(Product Product, vector<string> *prodNames, vector<int> *prodCosts)
 {
     int costIndex = -1;
     for(int j = 0; j < prodNames->size(); j++)
     {
-        if(prodNames->at(j) == product.productName)
+        if(prodNames->at(j) == Product.productName)
         {
             costIndex = j;
             break;
@@ -157,7 +156,7 @@ int Dictionary::total(vector<string> *prodNames, vector<int> *prodCosts)
     int sum = 0;
     for(int i = 0; i < hashSize; i++)
     {
-        for(tuple<string, vector<product>> hashValue: purchases[i])
+        for(tuple<string, vector<Product>> hashValue: purchases[i])
         {
             sum += customerTotal(get<0>(hashValue), prodNames, prodCosts);
         }
@@ -177,7 +176,7 @@ int Dictionary::count()
 }
 
 // Determines if name of product p is in the vector of product names.
-bool Dictionary::isProduct(product p, vector<string> *prodNames)
+bool Dictionary::isProduct(Product p, vector<string> *prodNames)
 {
     for(int i = 0; i < prodNames->size(); i++)
     {

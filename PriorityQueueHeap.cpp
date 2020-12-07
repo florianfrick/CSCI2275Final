@@ -13,7 +13,7 @@ PriorityQueueHeap::PriorityQueueHeap(int capa)
 }
 
 //Uses name and cost arrays to determine priority of the new item
-void PriorityQueueHeap::push(string purchaser, product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize)
+void PriorityQueueHeap::push(string purchaser, Product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize)
 {
     heapItem *newPurchase = new heapItem(purchaser, prod, -1);
     newPurchase->determinePriority(prodNames, prodCosts, arrSize);

@@ -7,13 +7,13 @@
 
 using namespace std;
 
-class product
+class Product
 {
     public:
         string productName;
         int num;
 
-    product(string pName, int n)
+    Product(string pName, int n)
         :productName(pName), num(n)
     {}
 };
@@ -22,10 +22,10 @@ class heapItem
 {
     public:
         string purchaser;
-        product prod;
+        Product prod;
         int priority;
 
-        heapItem(string purchaser, product prod, int priority)
+        heapItem(string purchaser, Product prod, int priority)
             :purchaser(purchaser), prod(prod), priority(priority)
         {}
     

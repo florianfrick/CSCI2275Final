@@ -10,7 +10,7 @@ class PriorityQueueHeap
 {
     public:
         PriorityQueueHeap(int capacity);
-        void push(std::string purchaser, product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize);
+        void push(std::string purchaser, Product prod, vector<string> *prodNames, vector<int> *prodCosts, int arrSize);
         heapItem* pop();
         void print();
         bool empty();

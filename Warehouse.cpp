@@ -78,37 +78,38 @@ PriorityQueueHeap createOrders(string fileName, vector<string> *prodNames, vecto
         getline(linestream, prodAmount, ',');
 
         // Adds order to heap.
-        ordersHeap.push(purchaser, product(prodName, stoi(prodAmount)), prodNames, prodCosts, productsArrSize);
+        ordersHeap.push(purchaser, Product(prodName, stoi(prodAmount)), prodNames, prodCosts, productsArrSize);
     }
 
     ordersFile.close(); // closes the file
     return ordersHeap;
 }
 
-// Creates and returns dictionary by popping values from ordersHeap and using arrays to determine if product is in stock and the cost of the order.
-Dictionary fulfillOrders(PriorityQueueHeap *ordersHeap, vector<string> *prodNames, vector<int> *prodStocks, vector<int> *prodCosts)
+// Fills dictionary by popping values from ordersHeap and using arrays to determine if product is in stock and the cost of the order.
+void fulfillOrders(Dictionary *tabs, PriorityQueueHeap *ordersHeap, vector<string> *prodNames, vector<int> *prodStocks, vector<int> *prodCosts)
 {
-    Dictionary tabs = Dictionary(1000);
-
-    while(!ordersHeap->empty())
+        while(!ordersHeap->empty())
     {
         // Removes order from heap.
         heapItem *poppedOrder = ordersHeap->pop();
-        if(poppedOrder != NULL && tabs.isProduct(poppedOrder->prod, prodNames))
+        if(poppedOrder != NULL && tabs->isProduct(poppedOrder->prod, prodNames))
         {
-            int costIndex = tabs.getCostIndex(poppedOrder->prod, prodNames, prodCosts);
+            int costIndex = tabs->getCostIndex(poppedOrder->prod, prodNames, prodCosts);
             int newStock = prodStocks->at(costIndex) - poppedOrder->prod.num;
                         
             if(newStock >= 0)
             {
                 // Adds order to dictionary under purchaser's "tab" if the product was in stock. Reduces stock by order's size.
-                tabs.insert(poppedOrder->purchaser, poppedOrder->prod);
+                tabs->insert(poppedOrder->purchaser, poppedOrder->prod);
                 prodStocks->at(costIndex) = newStock;
             }
         }
+        else
+        {
+            cout << "Product is not offered." << endl;
+        }
+        
     }
-
-    return tabs;
 }
 
 int main(int argc, char *argv[])
@@ -127,7 +128,8 @@ int main(int argc, char *argv[])
     PriorityQueueHeap ordersHeap = createOrders(argv[2], &prodNames, &prodCosts, productsArrSize);
 
     // FULFULL ORDERS
-    Dictionary tabs = fulfillOrders(&ordersHeap, &prodNames, &prodStocks, &prodCosts);
+    Dictionary tabs = Dictionary(1000);
+    fulfillOrders(&tabs, &ordersHeap, &prodNames, &prodStocks, &prodCosts);
 
     // OUTPUT
     tabs.print();
@@ -146,7 +148,7 @@ string menu = "\n======Main Menu=====\n"
                     "7. Print Stock\n"
                     "8. Print Costs\n"
                     "9. Quit\n";
-    
+
     cout << menu << endl;
     int choice;
     bool exit = false;
@@ -159,6 +161,8 @@ string menu = "\n======Main Menu=====\n"
                 case 1:
                 {
                     tabs.print();
+                    cout << endl << "Total Cost: " << tabs.total(&prodNames, &prodCosts) << endl;
+                    cout << "Number of Customers: " << tabs.count() << endl;
                     break;
                 }
                 case 2:
@@ -180,7 +184,7 @@ string menu = "\n======Main Menu=====\n"
                     string name = "";
                     cout << "What is the name of the customer?" << endl;
                     cin >> name;
-                    vector<product> customerProds = tabs.search(name);
+                    vector<Product> customerProds = tabs.search(name);
                     for(int i = 0; i < customerProds.size(); i++)
                     {
                         cout << "\t" << customerProds.at(i).productName << " " << customerProds.at(i).num << endl;
@@ -204,12 +208,12 @@ string menu = "\n======Main Menu=====\n"
                     string num = "";
                     cout << "How many of the product?" << endl;
                     cin >> num;
-                    ordersHeap.push(name, product(prodName, stoi(num)), &prodNames, &prodCosts, productsArrSize);
+                    ordersHeap.push(name, Product(prodName, stoi(num)), &prodNames, &prodCosts, productsArrSize);
                     break;
                 }
                 case 6:
                 {
-                    fulfillOrders(&ordersHeap, &prodNames, &prodStocks, &prodCosts);
+                    fulfillOrders(&tabs, &ordersHeap, &prodNames, &prodStocks, &prodCosts);
                     break;
                 }
                 case 7:
