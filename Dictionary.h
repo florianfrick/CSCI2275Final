@@ -22,11 +22,10 @@ class Dictionary
         int count(); 
         int getCostIndex(Product Product, vector<string> *prodNames, vector<int> *prodCosts);
         bool isProduct(Product p, vector<string> *prodNames);
-    private:
+        int hash(string name);
         int productIndex(Product p, vector<Product> products);
         bool isPastCustomer(string name, vector<tuple<string, vector<Product>>> *temp, int i);
-        int hash(string name);
-
+    private:
         int hashSize;
         vector<tuple<string, vector<Product>>> *purchases; // array of chaining vectors where each tuple represents a customer and their purchased products
 };
