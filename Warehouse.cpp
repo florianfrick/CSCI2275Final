@@ -20,14 +20,14 @@ int createCostStock(string fileName, vector<string> *prodNames, vector<int> *pro
     int i = 0;
     while(getline(productsFile, line))
     {
-        //collects information from external file
+        // Collects information from external file
         stringstream linestream(line);
         string prodName, prodStock, prodCost;
         getline(linestream, prodName, ',');
         getline(linestream, prodStock, ',');
         getline(linestream, prodCost, ',');
 
-        //puts information into arrays
+        // Puts information into arrays
         prodNames->push_back(prodName);
         prodStocks->push_back(stoi(prodStock));
         prodCosts->push_back(stoi(prodCost));
@@ -35,7 +35,7 @@ int createCostStock(string fileName, vector<string> *prodNames, vector<int> *pro
         i++;
     }
 
-    productsFile.close(); // closes the file
+    productsFile.close(); // Closes the file
     return i;
 }
 
@@ -49,6 +49,8 @@ int getNumLines(string fileName)
         cout << "Error: Could not open file." << endl;
         return -1;
     }
+
+    // Counts lines
     int count = 0;
     string line;
     while(getline(file, line))
@@ -131,9 +133,8 @@ int main(int argc, char *argv[])
     Dictionary tabs = Dictionary(1000);
     fulfillOrders(&tabs, &ordersHeap, &prodNames, &prodStocks, &prodCosts);
 
-    // OUTPUT
+    // OUTPUT DICTIONARY INFO
     tabs.print();
-
     cout << endl << "Total Cost: " << tabs.total(&prodNames, &prodCosts) << endl;
     cout << "Number of Customers: " << tabs.count() << endl;
 
@@ -160,6 +161,7 @@ string menu = "\n======Main Menu=====\n"
         {
                 case 1:
                 {
+                    // Print Dictionary
                     tabs.print();
                     cout << endl << "Total Cost: " << tabs.total(&prodNames, &prodCosts) << endl;
                     cout << "Number of Customers: " << tabs.count() << endl;
@@ -167,6 +169,7 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 2:
                 {
+                    // Print First Order
                     heapItem *firstOrder = ordersHeap.get(1);
                     if(firstOrder != NULL)
                     {
@@ -181,6 +184,7 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 3:
                 {
+                    // Print Customer Info (products) and customer toatl
                     string name = "";
                     cout << "What is the name of the customer?" << endl;
                     cin >> name;
@@ -194,11 +198,13 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 4:
                 {
+                    // Print Total Cost
                     cout << endl << "Total Cost: " << tabs.total(&prodNames, &prodCosts) << endl;
                     break;
                 }
                 case 5:
                 {
+                    // Add Order
                     string name = "";
                     cout << "What is the name of the customer?" << endl;
                     cin >> name;
@@ -213,11 +219,13 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 6:
                 {
+                    // Fulfill Orders
                     fulfillOrders(&tabs, &ordersHeap, &prodNames, &prodStocks, &prodCosts);
                     break;
                 }
                 case 7:
                 {
+                    // Print Stock
                     for(int i = 0; i < productsArrSize; i++)
                     {
                         cout << prodNames[i] << " " << prodStocks[i] << endl;
@@ -226,6 +234,7 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 8:
                 {
+                    // Print Costs
                     for(int i = 0; i < productsArrSize; i++)
                     {
                         cout << prodNames[i] << " " << prodCosts[i] << endl;
@@ -234,6 +243,7 @@ string menu = "\n======Main Menu=====\n"
                 }
                 case 9:
                 {
+                    // Quit
                     exit = true;
                     return 0;
                 }
